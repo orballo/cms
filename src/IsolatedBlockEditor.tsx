@@ -5,14 +5,24 @@ import "@automattic/isolated-block-editor/build-browser/core.css";
 const BlockEditor = () => (
   <IsolatedBlockEditor
     settings={{}}
-    onSaveContent={async (html: string) => {
+    onSaveContent={async (html: string) => {}}
+    onSaveBlocks={async (blocks: any) => {
       await fetch("http://localhost:8000/save", {
         method: "POST",
-        body: html,
-        mode: "no-cors",
+        mode: "cors",
+        cache: "no-cache",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(blocks),
       });
     }}
-    onError={(error) => console.error(error)}
+    onLoad={async () => {
+      const response = await fetch("http://localhost:8000/load");
+      const payload = await response.json();
+      return payload;
+    }}
+    onError={(error: any) => console.error(error)}
   ></IsolatedBlockEditor>
 );
 
